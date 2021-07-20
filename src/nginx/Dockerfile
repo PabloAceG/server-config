@@ -10,3 +10,7 @@ ARG daem=$conf/conf.d
 COPY --chown=nginx:nginx $src/nginx.conf $conf/
 COPY --chown=nginx:nginx $src/grafana.conf $daem/grafana.conf
 COPY --chown=nginx:nginx $src/prometheus.conf $daem/grafana.conf
+
+CMD [ "nginx", 
+      "-c", "/etc/nginx/nginx.conf", 
+      "-g", "daemon-off"]
