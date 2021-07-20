@@ -6,14 +6,14 @@ ARG conf=/etc/prometheus
 ARG data=/data/prometheus
 
 # Executables
-COPY --chown prometheus:prometheus $conf/promtool
-COPY --chown prometheus:prometheus $conf/prometheus
+COPY --chown=prometheus:prometheus $conf/promtool
+COPY --chown=prometheus:prometheus $conf/prometheus
 # Config files
-COPY --chown prometheus:prometheus $conf/consoles/
-COPY --chown prometheus:prometheus $conf/console_libraries/
-COPY --chown prometheus:prometheus $conf/prometheus.yml
+COPY --chown=prometheus:prometheus $conf/consoles/
+COPY --chown=prometheus:prometheus $conf/console_libraries/
+COPY --chown=prometheus:prometheus $conf/prometheus.yml
 # Data
-COPY --chown prometheus:prometheus $data/
+COPY --chown=prometheus:prometheus $data/
 
 # Run Prometheus service
 CMD $conf/prometheus \
