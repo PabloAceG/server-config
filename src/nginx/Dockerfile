@@ -6,4 +6,4 @@ ARG daem=$conf/conf.d
 
 # Config files
 COPY $src/grafana.conf $daem/grafana.conf
-COPY $src/prometheus.conf $daem/grafana.conf
+COPY $src/prometheus.conf $daem/prometheus.conf
