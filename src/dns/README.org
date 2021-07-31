@@ -1,5 +1,9 @@
 #+TITLE: DuckDNS
 
+#+CAPTION: DuckDNS Dynamic DNS
+#+NAME:   fig:duckdns
+[[../../images/DDNS-Duck-DNS.webp]]
+
 [[https://www.duckdns.org/][DuckDNS]] is a Free and Open-Source Dynamic DNS service provides a URL access to
 the machine using executing this service.
 

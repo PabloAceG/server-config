@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -eu
 
 SCRIPT_PATH="$(dirname $0)"
 SRC_PATH="${SCRIPT_PATH}/.."
@@ -47,7 +47,7 @@ function main() {
   mkdir -p "$LOGGING"
 
   # Set execution periocidity
-  crontab "${RESOURCES_PATH}/duckdns-crontab"
+  (crontab -l; cat "${RESOURCES_PATH}/duckdns-crontab";) | crontab || return 1
 
   # Test script execution
   test_ddns || return 1
