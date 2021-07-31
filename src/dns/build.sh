@@ -10,6 +10,7 @@ LOGGING="/var/log/duckdns"
 source "${SRC_PATH}/utils.sh"
 source "${RESOURCES_PATH}/duckdns.cfg"
 
+# Test connection to DuckDNS AWS service
 function test_ddns() {
   echo '    Testing if script can be executed...'
 
@@ -28,6 +29,7 @@ function test_ddns() {
   echo '    Testing if script can be executed... done'
 }
 
+# Main function
 function main() {
   echo 'Setting up Dynamic DNS: DuckDNS...'
 
@@ -39,7 +41,7 @@ function main() {
   is_installed "curl" || return 1
 
   # Copy script to host destination
-  cp "${RESOURCES_PATH}/duck.sh" "$DESTINATION"
+  cp "${RESOURCES_PATH}/duckdns.sh" "$DESTINATION"
   replace_placeholder "domain" "$DOMAINS" "$DESTINATION" || return 1
   replace_placeholder "token" "$TOKEN" "$DESTINATION" || return 1
   chmod 744 "$DESTINATION"
