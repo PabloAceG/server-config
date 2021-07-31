@@ -1,0 +1,10 @@
+#+TITLE: DuckDNS
+
+[[https://www.duckdns.org/][DuckDNS]] is a Free and Open-Source Dynamic DNS service provides a URL access to
+the machine using executing this service.
+
+To install it run
+#+NAME: run_duckdns
+#+BEGIN_src bash
+~/server-config/src/dns# ./build.sh
+#+END_src
