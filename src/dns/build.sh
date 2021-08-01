@@ -37,7 +37,7 @@ function main() {
   is_root || return 1
 
   # Check if dependencies are installed
-  is_installed "crond" || return 1
+  is_installed "crontab" || return 1
   is_installed "curl" || return 1
 
   # Copy script to host destination
