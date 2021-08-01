@@ -1,22 +1,37 @@
 FROM debian:latest
 
-USER prometheus:prometheus
-
+ARG bin=/usr/local/bin
 ARG conf=/etc/prometheus
 ARG data=/data/prometheus
 
+RUN apt-get update && apt-get -y install curl
+
+RUN LOCATION=$(curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest \
+| grep "tag_name" \
+| awk '{print "https://github.com/prometheus/prometheus/archive/" substr($2, 2, length($2)-3) "linux-amd64.tar.gz"}') \
+; curl -s -L -o prometheus.tar.gz $LOCATION \
+&& tar xf prometheus.tar.gz \
+&& mv prometheus-* prometheus
+
+WORKDIR prometheus
+
 # Executables
-COPY --chown=prometheus:prometheus $conf/promtool
-COPY --chown=prometheus:prometheus $conf/prometheus
+COPY promtool $bin/promtool
+COPY prometheus $bin/prometheus
 # Config files
-COPY --chown=prometheus:prometheus $conf/consoles/
-COPY --chown=prometheus:prometheus $conf/console_libraries/
-COPY --chown=prometheus:prometheus $conf/prometheus.yml
+COPY consoles/ $conf/consoles/
+COPY console_libraries/ $conf/console_libraries/
+COPY prometheus.yml $conf/prometheus.yml
 # Data
-COPY --chown=prometheus:prometheus $data/
+RUN mkdir -p /data/prometheus
+
+# Remove garbage
+WORKDIR /
+RUN prometheus.tar.gz
+RUN apt-get remove curl
 
 # Run Prometheus service
-CMD $conf/prometheus \
+CMD $bin/prometheus \
     --config.file=$conf/prometheus.yml \
     --storage.tsdb.path=$data/ \
     --web.console.templates=$conf/consoles/ \
