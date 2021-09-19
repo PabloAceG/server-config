@@ -1,0 +1,47 @@
+---
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.0.1
+      hooks:
+          - id: trailing-whitespace
+          - id: end-of-file-fixer
+          - id: check-yaml
+          - id: check-added-large-files
+
+    - repo: https://github.com/jumanjihouse/pre-commit-hooks
+      rev: 2.1.5
+      hooks:
+          - id: forbid-binary
+          - id: require-ascii
+          - id: shellcheck
+          - id: shfmt
+
+    - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+      rev: 0.1.0
+      hooks:
+          - id: yamlfmt
+
+    - repo: https://github.com/Lucas-C/pre-commit-hooks
+      rev: v1.1.10
+      hooks:
+          - id: forbid-crlf
+          - id: remove-crlf
+
+    - repo: https://github.com/Lucas-C/pre-commit-hooks-nodejs
+      rev: v1.1.1
+      hooks:
+          - id: dockerfile_lint
+
+    - repo: https://github.com/jorisroovers/gitlint
+      rev: v0.15.1
+      hooks:
+          - id: gitlint
+
+    - repo: https://github.com/fortman/pre-commit-prometheus
+      rev: v1.2.0
+      hooks:
+          - id: check-config
+          - id: check-rules
+          - id: test-rules
