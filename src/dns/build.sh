@@ -4,11 +4,16 @@ SCRIPT_PATH="$(dirname $0)"
 SRC_PATH="${SCRIPT_PATH}/.."
 RESOURCES_PATH="${SCRIPT_PATH}/sources"
 
+DUCKDNS="${RESOURCES_PATH}/duckdns.sh"
+CONFIG="${RESOURCES_PATH}/duckdns.cfg"
+TIMERNAME="duckdns.timer"
+TIMER="${RESOURCES_PATH}/${TIMERNAME}"
+
 DESTINATION="/usr/local/bin/duckdns.sh"
 LOGGING="/var/log/duckdns"
 
 source "${SRC_PATH}/utils.sh"
-source "${RESOURCES_PATH}/duckdns.cfg"
+source "${CONFIG}"
 
 # Test connection to DuckDNS AWS service
 function test_ddns() {
@@ -21,7 +26,7 @@ function test_ddns() {
   status="$(cat "${LOGGING}/duckdns.log")"
   if [[ $status == "KO" ]]; then
     echo "[ERROR]: DuckDNS failed..."
-    echo "[ERROR]: Check that DOMAINS and TOKEN are correct in ${RESOURCES_PATH}/duckdns.cfg file"
+    echo "[ERROR]: Check that DOMAINS and TOKEN are correct in ${CONFIG} file"
     echo "[ERROR]: or substitute them directly in ${DESTINATION}"
     return 1
   fi
@@ -37,11 +42,10 @@ function main() {
   is_root || return 1
 
   # Check if dependencies are installed
-  is_installed "crontab" || return 1
   is_installed "curl" || return 1
 
   # Copy script to host destination
-  cp "${RESOURCES_PATH}/duckdns.sh" "$DESTINATION"
+  cp "$DUCKDNS" "$DESTINATION"
   replace_placeholder "domain" "$DOMAINS" "$DESTINATION" || return 1
   replace_placeholder "token" "$TOKEN" "$DESTINATION" || return 1
   chmod 744 "$DESTINATION"
@@ -49,7 +53,7 @@ function main() {
   mkdir -p "$LOGGING"
 
   # Set execution periocidity
-  (crontab -l; cat "${RESOURCES_PATH}/duckdns-crontab";) | crontab || return 1
+  cp "${TIMER}" "/etc/systemd/system/${TIMERNAME}"
 
   # Test script execution
   test_ddns || return 1
