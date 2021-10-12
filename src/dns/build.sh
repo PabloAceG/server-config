@@ -6,8 +6,11 @@ RESOURCES_PATH="${SCRIPT_PATH}/sources"
 
 DUCKDNS="${RESOURCES_PATH}/duckdns.sh"
 CONFIG="${RESOURCES_PATH}/duckdns.cfg"
+SERVICENAME="duckdns.service"
+SERVICE="${RESOURCES_PATH}/${SERVICENAME}"
 TIMERNAME="duckdns.timer"
 TIMER="${RESOURCES_PATH}/${TIMERNAME}"
+SYSTEMD_PATH="/etc/systemd/system"
 
 DESTINATION="/usr/local/bin/duckdns.sh"
 LOGGING="/var/log/duckdns"
@@ -34,6 +37,25 @@ function test_ddns() {
   echo '    Testing if script can be executed... done'
 }
 
+# Configure script parameters and set logging path
+function script_configuration() {
+  # Copy script to host destination
+  cp "$DUCKDNS" "$DESTINATION"
+  replace_placeholder "domain" "$DOMAINS" "$DESTINATION" || return 1
+  replace_placeholder "token" "$TOKEN" "$DESTINATION" || return 1
+  chmod 744 "$DESTINATION"
+  # Create log path
+  mkdir -p "$LOGGING"
+}
+
+# Install service and timer. Enabling periodical execution
+function enable_service() {
+  cp "${SERVICE}" "${SYSTEMD_PATH}/${SERVICENAME}"
+  cp "${TIMER}" "${SYSTEMD_PATH}/${TIMERNAME}"
+  systemctl daemon-reload
+  systemctl enable --now "${TIMERNAME}"
+}
+
 # Main function
 function main() {
   echo 'Setting up Dynamic DNS: DuckDNS...'
@@ -44,16 +66,11 @@ function main() {
   # Check if dependencies are installed
   is_installed "curl" || return 1
 
-  # Copy script to host destination
-  cp "$DUCKDNS" "$DESTINATION"
-  replace_placeholder "domain" "$DOMAINS" "$DESTINATION" || return 1
-  replace_placeholder "token" "$TOKEN" "$DESTINATION" || return 1
-  chmod 744 "$DESTINATION"
-  # Create log path
-  mkdir -p "$LOGGING"
+  # Configure script logging paths as well as parameters
+  script_configuration || return 1
 
-  # Set execution periocidity
-  cp "${TIMER}" "/etc/systemd/system/${TIMERNAME}"
+  # Set execution periodically
+  enable_service || return 1
 
   # Test script execution
   test_ddns || return 1
