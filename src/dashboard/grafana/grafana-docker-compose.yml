@@ -1,17 +1,8 @@
 version: '2'
+
 services:
-
-  proxy:
-    image: nginx-rev-proxy
-    volumes:
-      - /etc/ssl/:/etc/ssl/:ro
-    ports:
-      - 1000:1000
-      - 1001:1001
-    networks:
-      - reverse-proxy
-
   grafana-server:
+    container_name: grafana-server
     image: grafana/grafana
     volumes:
       - /etc/grafana/grafana.ini:/etc/grafana/grafana.ini
@@ -20,17 +11,11 @@ services:
       - /var/log/grafana:/var/log/grafana
       - /var/lib/grafana/plugins:/var/lib/grafana/plugins
       - /etc/grafana/provisioning:/etc/grafana/provisioning
-    ports: 
+    ports:
       - 3000:3000
     networks:
-      - reverse-proxy
+      - dashboard
 
-  prometheus-metrics:
-    image: prometheus-met
-    networks:
-      - reverse-proxy
-
-  networks:
-    reverse-proxy:
-      external:
-        name: reverse-proxy
+networks:
+  dashboard:
+    external: true

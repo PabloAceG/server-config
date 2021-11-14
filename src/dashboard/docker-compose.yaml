@@ -1,0 +1,22 @@
+version: '2'
+services:
+
+  proxy:
+    image: nginx-rev-proxy
+    volumes:
+      - /etc/ssl/:/etc/ssl/:ro
+    ports:
+      - 1000:1000
+      - 1001:1001
+    networks:
+      - reverse-proxy
+
+  prometheus-metrics:
+    image: prometheus-met
+    networks:
+      - reverse-proxy
+
+  networks:
+    reverse-proxy:
+      external:
+        name: reverse-proxy

@@ -1,0 +1,35 @@
+---
+- hosts: pve
+
+  handlers:
+    - name: restart docker grafana
+      docker_container: name=grafana-server image=grafana/grafana state=started restart=yes
+
+  tasks:
+    - include: ../common/docker.yml
+
+    - name: Create common Docker network
+      docker_network:
+        name: dashboard
+
+    - name: Create Docker Grafana folder
+      file:
+        path: /etc/drone/grafana
+        state: directory
+
+    - name: Copy Grafana Docker Compose
+      copy:
+        src: "{{ playbook_dir }}/grafana/grafana-docker-compose.yml"
+        dest: /etc/drone/grafana/
+
+    - name: Run Grafana container
+      docker_compose:
+        project_src: /etc/drone/grafana/
+        files:
+          - grafana-docker-compose.yml
+
+    - name: Place Grafana configuration file
+      copy:
+        src: "{{ playbook_dir }}/grafana/sources/grafana.ini"
+        dest: /etc/grafana/grafana.ini
+      notify: restart docker grafana
