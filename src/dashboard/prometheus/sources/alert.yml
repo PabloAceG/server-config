@@ -1,0 +1,6 @@
+# TODO: do i need this alert? What are alerts?
+groups:
+  - name: SystemAlerts
+    rules: InstanceDown
+    expr: up{job="services"} < 1
+    for: 5m

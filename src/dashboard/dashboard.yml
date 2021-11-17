@@ -2,4 +2,5 @@
 - hosts: pve
 
   tasks:
-    - include: grafana/grafana.yml tags=grafana
+    - include: grafana/deploy-grafana.yml tags=grafana
+    - include: prometheus/deploy-prometheus.yml tags=prometheus

@@ -10,13 +10,6 @@
     path: /etc/docker/grafana
     state: directory
 
-- name: Tear down existing Grafana container
-  docker_compose:
-    project_src: /etc/docker/grafana
-    files:
-      - grafana-docker-compose.yml
-    state: absent
-
 - name: Copy Grafana Docker Compose
   copy:
     src: "{{ playbook_dir }}/grafana/grafana-docker-compose.yml"
@@ -27,8 +20,17 @@
     src: "{{ playbook_dir }}/grafana/sources/grafana.ini"
     dest: /etc/docker/grafana/grafana.ini
 
+- name: Tear down existing Grafana container
+  docker_compose:
+    project_src: /etc/docker/grafana
+    files:
+      - grafana-docker-compose.yml
+    state: absent
+
 - name: Run Grafana container
   docker_compose:
     project_src: /etc/docker/grafana
     files:
       - grafana-docker-compose.yml
+
+ # TODO: Include wait for and container state must be running

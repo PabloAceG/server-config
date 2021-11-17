@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 15s # Default every 1 minute
+  scrape_timeout: 15s # Default every 1 minute
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            # - alertmanager:9083
+
+# Load rules and periodically evaluate them according to global
+# 'evaluate_interval'
+rule_files:
+  #- alert.yml
+
+# A scrape configuration containing exactly one endpoint to scape:
+# Here it's the Prometheus itself
+scrape_configs:
+  - job_name: 'prometheus'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'prometheus:9090'
+          #- 'prometheus:9100'
+          - 'idonoexists:564'
