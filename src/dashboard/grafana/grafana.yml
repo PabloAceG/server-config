@@ -1,0 +1,34 @@
+---
+- include: ../../common/docker.yml
+
+- name: Create common Docker network
+  docker_network:
+    name: dashboard
+
+- name: Create Docker Grafana folder
+  file:
+    path: /etc/docker/grafana
+    state: directory
+
+- name: Tear down existing Grafana container
+  docker_compose:
+    project_src: /etc/docker/grafana
+    files:
+      - grafana-docker-compose.yml
+    state: absent
+
+- name: Copy Grafana Docker Compose
+  copy:
+    src: "{{ playbook_dir }}/grafana/grafana-docker-compose.yml"
+    dest: /etc/docker/grafana
+
+- name: Place Grafana configuration file
+  copy:
+    src: "{{ playbook_dir }}/grafana/sources/grafana.ini"
+    dest: /etc/docker/grafana/grafana.ini
+
+- name: Run Grafana container
+  docker_compose:
+    project_src: /etc/docker/grafana
+    files:
+      - grafana-docker-compose.yml

@@ -3,19 +3,28 @@ version: '2'
 services:
   grafana-server:
     container_name: grafana-server
-    image: grafana/grafana
-    volumes:
-      - /etc/grafana/grafana.ini:/etc/grafana/grafana.ini
-      - /var/lib/grafana:/var/lib/grafana
-      - /usr/share/grafana:/usr/share/grafana
-      - /var/log/grafana:/var/log/grafana
-      - /var/lib/grafana/plugins:/var/lib/grafana/plugins
-      - /etc/grafana/provisioning:/etc/grafana/provisioning
+    image: grafana/grafana:latest
     ports:
       - 3000:3000
-    networks:
-      - dashboard
+    restart: unless-stopped
+    volumes:
+      - ./grafana.ini:/etc/docker/grafana/grafana.ini
+      - logs:/var/log/grafana/grafana.log
+      - data:/var/lib/grafana
+      - home:/usr/share/grafana
+      - plugins:/var/lib/grafana/plugins
+      - provisioning:/etc/grafana/provisioning
+
+volumes:
+  data:
+
+  home:
+
+  logs:
+
+  plugins:
+
+  provisioning:
 
 networks:
   dashboard:
-    external: true
