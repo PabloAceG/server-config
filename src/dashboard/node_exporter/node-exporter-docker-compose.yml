@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  node_exporter:
+    container_name: node-exporter
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+    restart: unless-stopped
+    volumes:
+      - host:/host
+    command: '--path.rootfs=/host'
+
+volumes:
+  host:
+
+networks:
+  dashboard:
