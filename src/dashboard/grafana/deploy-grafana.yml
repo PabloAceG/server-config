@@ -1,7 +1,7 @@
 ---
 - include: ../../common/docker.yml
 
-- name: Create common Docker network
+- name: Create Docker network for dashboard
   docker_network:
     name: dashboard
 

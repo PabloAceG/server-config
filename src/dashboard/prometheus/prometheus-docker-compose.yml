@@ -6,13 +6,14 @@ services:
     image: prom/prometheus:latest
     ports:
       - 9090:9090
+    restart: unless-stopped
     volumes:
       - ./conf:/etc/prometheus
-      - prometheus-data:/prometheus
-    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
+      - data:/prometheus
+    command: '--web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml'
 
 volumes:
-  prometheus-data:
+  data:
 
 networks:
   dashboard:
