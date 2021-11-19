@@ -4,6 +4,8 @@ services:
   node_exporter:
     container_name: node-exporter
     image: prom/node-exporter
+    networks:
+      - dashboard
     ports:
       - 9100:9100
     restart: unless-stopped
@@ -16,3 +18,4 @@ volumes:
 
 networks:
   dashboard:
+    external: true
