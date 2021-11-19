@@ -1,0 +1,37 @@
+# -*- mode: gitignore; -*-
+
+#     _             _           
+#    | |__  __ _ __| |_  _ _ __ 
+#   _| '_ \/ _` (_-< ' \| '_/ _|
+#  (_)_.__/\__,_/__/_||_|_| \__|
+#  .bashrc
+.bashrc                              
+
+#   ___                  
+#  | __|_ __  __ _ __ ___
+#  | _|| '  \/ _` / _(_-<
+#  |___|_|_|_\__,_\__/__/
+#  Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+# projectiles files
+.projectile
+# directory configuration
+.dir-locals.el
+
+
+#    ___                             _
+#   / _ \ _ _ __ _ ___ _ __  ___  __| |___
+#  | (_) | '_/ _` |___| '  \/ _ \/ _` / -_)
+#   \___/|_| \__, |   |_|_|_\___/\__,_\___|
+#            |___/                         
+#  Org-mode
+.org-id-locations
+*_archive
+

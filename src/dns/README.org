@@ -1,0 +1,52 @@
+#+TITLE: DuckDNS
+
+#+CAPTION: DuckDNS Dynamic DNS
+#+NAME:   fig:duckdns
+#+ATTR_HTML: :alt DuckDNS-logo
+[[../../images/DDNS-Duck-DNS.png]]
+
+[[https://www.duckdns.org/][DuckDNS]] is a Free and Open-Source Dynamic DNS service provides a URL access to
+the machine using executing this service.
+
+* Installation
+
+To install it run
+#+NAME: run_duckdns
+#+BEGIN_src bash
+~/server-config/src/dns# ./build.sh
+#+END_src
+
+* Debugging
+
+If installed correctly, there should be a unit by the name of duckdns.timer; 
+which activates the duckdns.timer launch the synchronization with DuckDNS. In 
+order to show if the the timer is running, execute
+
+#+NAME: list_timers
+#+BEGIN_src bash
+root@pve:~/server-config# systemctl list-timers 
+NEXT                        LEFT          LAST                         PASSED             UNIT                         ACTIVATES
+Sun 2021-11-14 17:46:00 WET 13s left      Sun 2021-11-14 17:45:00 WET  46s ago            pvesr.timer                  pvesr.service
+Sun 2021-11-14 17:46:24 WET 38s left      Sun 2021-11-14 17:36:24 WET  9min ago           duckdns.timer                duckdns.service
+Sun 2021-11-14 17:50:23 WET 4min 36s left n/a                          n/a                systemd-tmpfiles-clean.timer systemd-tmpfiles-clean.service
+Sun 2021-11-14 18:09:32 WET 23min left    Thu 2021-11-04 10:19:41 WET  1 weeks 3 days ago fstrim.timer                 fstrim.service
+Sun 2021-11-14 18:35:16 WET 49min left    Thu 2021-11-04 10:35:41 WET  1 weeks 3 days ago apt-daily-upgrade.timer      apt-daily-upgrade.service
+Sun 2021-11-14 19:37:21 WET 1h 51min left Sat 2021-10-23 09:18:44 WEST 3 weeks 1 days ago pve-daily-update.timer       pve-daily-update.service
+Sun 2021-11-14 20:52:17 WET 3h 6min left  Sat 2021-10-23 21:05:56 WEST 3 weeks 0 days ago apt-daily.timer              apt-daily.service
+Mon 2021-11-15 00:00:00 WET 6h left       Sun 2021-11-14 17:35:19 WET  10min ago          logrotate.timer              logrotate.service
+Mon 2021-11-15 00:00:00 WET 6h left       Sun 2021-11-14 17:35:19 WET  10min ago          man-db.timer                 man-db.service
+Sun 2021-11-21 03:10:18 WET 6 days left   Sun 2021-11-14 17:36:18 WET  9min ago           e2scrub_all.timer            e2scrub_all.service
+#+END_src
+
+To show the state of the timer:
+#+NAME: list_duckdns_timer
+#+BEGIN_src bash
+root@pve:~/server-config# systemctl status duckdns.timer
+● duckdns.timer - Run DuckDNS DDNS service every 10 minutes
+     Loaded: loaded (/etc/systemd/system/duckdns.timer; enabled; vendor preset: enabled)
+     Active: active (waiting) since Sun 2021-11-14 17:35:06 WET; 12min ago
+    Trigger: Sun 2021-11-14 17:56:25 WET; 8min left
+   Triggers: ● duckdns.service
+
+Nov 14 17:35:06 pve systemd[1]: Started Run DuckDNS DDNS service every 10 minutes.
+#+END_src
