@@ -7,8 +7,16 @@
 
 - name: Create Docker Grafana folder
   file:
-    path: /etc/docker/grafana
+    path: /etc/docker/grafana/conf
     state: directory
+
+- name: Create Grafana provisioning folder
+  file:
+    path: "/etc/docker/grafana/provisioning/{{ item }}"
+    state: directory
+  loop:
+    - datasources
+    - dashboards
 
 - name: Copy Grafana Docker Compose
   copy:
@@ -18,7 +26,17 @@
 - name: Place Grafana configuration file
   copy:
     src: "{{ playbook_dir }}/grafana/sources/grafana.ini"
-    dest: /etc/docker/grafana/grafana.ini
+    dest: /etc/docker/grafana/conf/grafana.ini
+
+- name: Place Grafana datasource files
+  copy:
+    src: "{{ item.file }}"
+    dest: "/etc/docker/grafana/provisioning/{{ item.fdest }}"
+  loop:
+    - {
+      file: "{{ playbook_dir }}/grafana/sources/datasource.yml",
+      fdest: "datasources"
+    }
 
 - name: Tear down existing Grafana container
   docker_compose:
