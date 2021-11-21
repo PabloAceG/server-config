@@ -1,0 +1,110 @@
+#+TITLE: OpenVPN Server
+
+#+CAPTION OpenVPN Virtual Private Network
+#+NAME: fig:openvpn
+#+ATTR_HTML: :alt OpenVPN-logo
+[[../../../images/VPN-openvpn.png]]
+
+[[ttps://openvpn.net][OpenVPN]] is a secure Virtual Access Network connectivity that allows you
+to create you own Virtual Network Server, so it is possible to simulate that you
+are in a network. Handy when it comes to letting others access your server, but
+you still don't want to make your Public IP available using a DDNS service.
+
+* Installation - OpenVPN Server
+
+These steps on how to install OpenVPN Docker container have been taken directly
+from the [[https://github.com/kylemanna/docker-openvpn][original author's]]
+instructions:
+
+1. Run the following command to configure container's configuration files:
+   #+NAME: OpenVPN Configuration Files
+   #+BEGIN_src bash
+   docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_genconfig -u udp://<your-public-ip>
+   #+END_src
+
+   If you have your own servername or similar, you can use that instead.
+
+2. Generate the certificates, be advised, you will need a passphrase in order to
+   generate one.
+   #+NAME: OpenVPN Generate Certificates
+   #+BEGIN_src bash
+   docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_initpki
+   #+END_src
+
+3. Start OpenVPN server
+   #+NAME: OpenVPN Start Server
+   #+BEGIN_src bash
+   docker-compose -f openvpn-docker-compose.yml up -d
+   #+END_src
+
+* Installation OpenVPN Client
+# TODO: not yet written
+
+* Client Configuration
+
+If you don't want to manually type your client name on every command, you can
+always export it to a variable:
+#+NAME: OpenVPN Export Clientname
+#+BEGIN_src: bash
+export CLIENTNAME="clientname"
+#+END_src
+
+And afterwards reference it ~$CLIENTNAME~.
+
+** Configure Client Certificate
+
+Okay, great, you have everything up and running but... aren't you forgeting
+something? The answer is: yes, you are forgetting about client certificates, the
+only way you'll be able to connect to your ~ovpn~ server.
+
+In order to generate one, run:
+- Generate certificate (with a passhrase, recommended):
+  #+NAME: OpenVPN Generate Client Certificate
+  #+BEGIN_src: bash
+  docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn easyrsa build-client-full <CLIENTNAME>
+  #+END_src
+
+  Where ~CLIENTNAME~ is the name you want to assign to your client. It will also
+  be the name your client will be displayed with when connected to the server.
+
+  This command will ask for a passphrase in order to complete.
+
+- If you don't want to be asked for a passphare, run the same command including
+  ~nopass~ at the end, like so:
+  #+NAME: OpenVPN Generate Client Certificate Nopass
+  #+BEGIN_src: bash
+  docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn easyrsa build-client-full <CLIENTNAME> nopass
+  #+END_src
+
+** Retrieve Client Configuration
+In order to retrieve the client configuration with embedded certificates, run
+the command
+#+NAME: OpenVPN Retrieve Client Config
+#+BEGIN_src: bash
+docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_getclient <CLIENTNAME> > <CLIENTNAME>.ovpn
+#+END_src
+
+Where ~CLIENTNAME~ is the name of your client. You should remember that the
+client must have been previosly created.
+
+** Revoke Client Certificate
+To delete everything, run:
+#+NAME: OpenVPN Remove Client And Data
+#+BEGIN_src: bash
+docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_revokeclient <CLIENTNAME> remove
+#+END_src
+
+But hey, depending on your objective, you might want to keep the certificate
+files (crt, key and req files). Simply remove the last parameter of the command:
+#+NAME: OpenVPN Remove Client Keep Data
+#+BEGIN_src: bash
+docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_revokeclient <CLIENTNAME>
+#+END_src
+
+** List Clients
+
+To get a list with the signed up VPN's clients, run:
+#+NAME: OpenVPN List Clients
+#+BEGIN_src: bash
+docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_listclients
+#+END_src
