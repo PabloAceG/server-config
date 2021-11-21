@@ -45,7 +45,7 @@ instructions:
 If you don't want to manually type your client name on every command, you can
 always export it to a variable:
 #+NAME: OpenVPN Export Clientname
-#+BEGIN_src: bash
+#+BEGIN_src bash
 export CLIENTNAME="clientname"
 #+END_src
 
@@ -60,7 +60,7 @@ only way you'll be able to connect to your ~ovpn~ server.
 In order to generate one, run:
 - Generate certificate (with a passhrase, recommended):
   #+NAME: OpenVPN Generate Client Certificate
-  #+BEGIN_src: bash
+  #+BEGIN_src bash
   docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn easyrsa build-client-full <CLIENTNAME>
   #+END_src
 
@@ -72,7 +72,7 @@ In order to generate one, run:
 - If you don't want to be asked for a passphare, run the same command including
   ~nopass~ at the end, like so:
   #+NAME: OpenVPN Generate Client Certificate Nopass
-  #+BEGIN_src: bash
+  #+BEGIN_src bash
   docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn easyrsa build-client-full <CLIENTNAME> nopass
   #+END_src
 
@@ -80,7 +80,7 @@ In order to generate one, run:
 In order to retrieve the client configuration with embedded certificates, run
 the command
 #+NAME: OpenVPN Retrieve Client Config
-#+BEGIN_src: bash
+#+BEGIN_src bash
 docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_getclient <CLIENTNAME> > <CLIENTNAME>.ovpn
 #+END_src
 
@@ -90,14 +90,14 @@ client must have been previosly created.
 ** Revoke Client Certificate
 To delete everything, run:
 #+NAME: OpenVPN Remove Client And Data
-#+BEGIN_src: bash
+#+BEGIN_src bash
 docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_revokeclient <CLIENTNAME> remove
 #+END_src
 
 But hey, depending on your objective, you might want to keep the certificate
 files (crt, key and req files). Simply remove the last parameter of the command:
 #+NAME: OpenVPN Remove Client Keep Data
-#+BEGIN_src: bash
+#+BEGIN_src bash
 docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_revokeclient <CLIENTNAME>
 #+END_src
 
@@ -105,6 +105,6 @@ docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_revokeclien
 
 To get a list with the signed up VPN's clients, run:
 #+NAME: OpenVPN List Clients
-#+BEGIN_src: bash
+#+BEGIN_src bash
 docker-compose -f ./openvpn-docker-compose.yml run --rm openvpn ovpn_listclients
 #+END_src
