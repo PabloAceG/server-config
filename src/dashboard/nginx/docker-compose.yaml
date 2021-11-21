@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  dashboard-rev-proxy:
+    image: nginx/nginx
+    networks:
+      - dashboard
+    ports:
+      - xxx:xxx
+    restart: unless-stopped
+    volumes:
+        - /etc/ssl:/etc/ssl
+
+networks:
+  dashboard:
+    external: true
