@@ -1,0 +1,18 @@
+---
+- hosts: pve
+
+  tasks:
+    - include: ../../common/docker.yml
+
+    - name: Create Docker Openvpn folder
+      file:
+        path: /etc/docker/openvpn/data
+        state: directory
+
+    - name: Copy Openvpn Docker Compose file
+      copy:
+        src: "{{ playbook_dir }}/openvpn-docker-compose.yml"
+        dest: /etc/docker/openvpn
+
+    - debug:
+        msg: "The rest of the configuration is up to you, go to {{ playbook_dir }}/README.org to see the instructions on how to setup OpenVPN container."

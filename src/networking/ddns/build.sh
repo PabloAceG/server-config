@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 SCRIPT_PATH="$(dirname $0)"
-SRC_PATH="${SCRIPT_PATH}/.."
+SRC_PATH="${SCRIPT_PATH}/../.."
 RESOURCES_PATH="${SCRIPT_PATH}/sources"
 
 DUCKDNS="${RESOURCES_PATH}/duckdns.sh"
