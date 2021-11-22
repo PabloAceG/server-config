@@ -1,0 +1,9 @@
+[Unit]
+Description=Run start-up notification service on server boot
+
+[Timer]
+OnBootSec=30s
+Unit=startup-notification.service
+
+[Install]
+WantedBy=timers.target

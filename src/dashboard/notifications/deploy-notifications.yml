@@ -1,0 +1,40 @@
+---
+- hosts: pve
+
+  tasks:
+    - name: Copy notification scripts
+      copy:
+        src: "{{ item.fsrc }}"
+        dest: "{{ item.fdest }}"
+      loop:
+        - {
+          fsrc: "{{ playbook_dir }}/sources/startup-notification.sh",
+          fdest: "/usr/local/bin/startup-notification.sh"
+        }
+        - {
+          fsrc: "{{ playbook_dir }}/sources/startup-notification.service",
+          fdest: "/etc/systemd/system/startup-notification.service"
+        }
+        - {
+          fsrc: "{{ playbook_dir }}/sources/startup-notification.timer",
+          fdest: "/etc/systemd/system/startup-notification.timer"
+        }
+
+    - name: Provide execution permissions to scripts
+      file:
+        dest: "{{ item }}"
+        mode: a+x
+      loop:
+        - "/usr/local/bin/startup-notification.sh"
+
+    - name: Force systemd to reload configs
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable notification timers
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - startup-notification.timer
