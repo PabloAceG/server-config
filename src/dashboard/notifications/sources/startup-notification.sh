@@ -6,9 +6,9 @@ TOKEN=""
 URL="https://api.telegram.org/bot${TOKEN}/sendMessage"
 # Message
 DOCKERPS=$(docker ps --all --format "table {{.Names}}\t{{.State}}")
-DOCKERMSG="\n <b><i>Running containers:</i></b>\n $DOCKERPS"
+DOCKERMSG="\n <b><i>Running containers:</i></b><pre>$DOCKERPS</pre>"
 IPADDRESS=$(curl ifconfig.me)
-IPADDRESSMSG="\n\n <b><i>Current IP Address</i></b>:\n $IPADDRESS\n"
+IPADDRESSMSG="\n <b><i>Current IP Address</i></b>:\n $IPADDRESS\n"
 MESSAGE="$DOCKERMSG $IPADDRESSMSG"
 
 curl -s -X POST "${URL}" \
