@@ -1,10 +1,6 @@
 ---
 - include: ../../common/docker.yml
 
-- name: Create Docker network for dashboard
-  docker_network:
-    name: dashboard
-
 - name: Create Docker Prometheus folder
   file:
     path: /etc/docker/prom/prometheus/conf

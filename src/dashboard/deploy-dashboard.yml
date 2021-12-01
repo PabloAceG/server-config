@@ -2,6 +2,10 @@
 - hosts: pve
 
   tasks:
+    - name: Create Docker common network for dashboard
+      docker_network:
+        name: dashboard
+
     - include: grafana/deploy-grafana.yml
       tags: grafana
 
@@ -10,3 +14,6 @@
 
     - include: node_exporter/deploy-node-exporter.yml
       tags: nexporter
+
+    - include: nginx/deploy-nginx.yml
+      tags: nginx

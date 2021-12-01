@@ -1,9 +1,6 @@
 FROM nginx
 
-ARG src=/sources
-ARG conf=/etc/nginx
-ARG daem=$conf/conf.d
-
-# Config files
-COPY $src/grafana.conf $daem/grafana.conf
-COPY $src/prometheus.conf $daem/prometheus.conf
+RUN apt-get -y update
+RUN apt-get -y install python3-pip
+RUN pip3 install certbot
+RUN pip3 install certbot-nginx

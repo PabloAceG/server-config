@@ -1,0 +1,69 @@
+---
+#- include: ../../common/docker.yml
+
+- name: Create Docker Nginx folder
+  file:
+    path: /etc/docker/nginx/conf/conf.d
+    state: directory
+
+- name: Copy Nginx with Certbot Docker custom image
+  copy:
+    src: "{{ playbook_dir }}/nginx/Dockerfile"
+    dest: /etc/docker/nginx
+
+- name: Copy Nginx Docker Compose
+  copy:
+    src: "{{ playbook_dir }}/nginx/nginx-docker-compose.yml"
+    dest: /etc/docker/nginx
+
+- name: Place Nginx configuration files
+  copy:
+    src: "{{ item.file }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - {
+      file: "{{ playbook_dir }}/nginx/sources/nginx.conf",
+      dest: "/etc/docker/nginx/conf"
+    }
+    - {
+      file: "{{ playbook_dir }}/nginx/sources/grafana.conf",
+      dest: "/etc/docker/nginx/conf/conf.d"
+    }
+    - {
+      file: "{{ playbook_dir }}/nginx/sources/prometheus.conf",
+      dest: "/etc/docker/nginx/conf/conf.d"
+    }
+
+- name: Tear down existing Nginx container
+  docker_compose:
+    project_src: /etc/docker/nginx
+    files:
+      - nginx-docker-compose.yml
+    state: absent
+
+- name: Build Nginx-Certbot image
+  docker_image:
+    name: sagitarius/nginx-certbot
+    build:
+      path: /etc/docker/nginx
+    source: build
+
+- name: Run Nginx container
+  docker_compose:
+    project_src: /etc/docker/nginx
+    files:
+      - nginx-docker-compose.yml
+
+- name: Create certificates for Nginx
+  command: >-
+    docker exec nginx-rev-proxy \
+      certbot \
+        --non-interactive \
+        --nginx \
+        -m p.aceredag@gmail.com \
+        --agree-tos \
+        --staging \
+        -d localhost \
+        #-d prometheus
+
+ # TODO: Include wait for and container state must be running

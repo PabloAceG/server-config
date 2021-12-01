@@ -1,15 +1,18 @@
 version: '2'
 
 services:
-  dashboard-rev-proxy:
-    image: nginx/nginx
+  nginx-rev-proxy:
+    container_name: nginx-rev-proxy
+    image: sagitarius/nginx-certbot
     networks:
       - dashboard
     ports:
-      - xxx:xxx
+      - 3001:3001
+      - 9091:9091
     restart: unless-stopped
     volumes:
         - /etc/ssl:/etc/ssl
+        - ./conf:/etc/nginx/
 
 networks:
   dashboard:
