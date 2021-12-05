@@ -1,6 +1,5 @@
 ---
-# TODO: uncomment
-#- include: ../../common/docker.yml
+- include: ../../common/docker.yml
 
 - name: Create Docker Nginx folder
   file:
