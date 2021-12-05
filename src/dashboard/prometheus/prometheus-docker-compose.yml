@@ -6,8 +6,6 @@ services:
     image: prom/prometheus:latest
     networks:
       - dashboard
-    ports:
-      - 9090:9090
     restart: unless-stopped
     volumes:
       - ./conf:/etc/prometheus

@@ -1,4 +1,5 @@
 ---
+# TODO: uncomment
 #- include: ../../common/docker.yml
 
 - name: Create Docker Nginx folder
@@ -16,23 +17,101 @@
     src: "{{ playbook_dir }}/nginx/nginx-docker-compose.yml"
     dest: /etc/docker/nginx
 
-- name: Place Nginx configuration files
+- fail:
+    msg: "unsupported internet_protocol try: https, http" # TODO: also set this text with variable value
+  when: internet_protocol not in ["https", "http"] # TODO: this array can be set in role /role/vars/main.yml
+
+- name: Install Python, dependency for Certbot
+  apt:
+    name: python3-pip
+  when: internet_protocol == 'https'
+
+- name: Install Certbot
+  pip:
+    name: certbot
+  when: internet_protocol == 'https'
+
+# TODO: check every certificate
+- name: Check if previous Certbot certificates exist
+  stat:
+    path: /etc/letsencrypt/live/rev.proxy
+  register: certbot_certs
+  when: internet_protocol == 'https'
+
+# TODO: variable using role for domain
+- name: Generate SSL certificates
+  command: >-
+    certbot certonly \
+      --non-interactive \
+      --standalone
+      --agree-tos \
+      -d pvesagitarius.duckdns.org \
+      --cert-name rev.proxy \
+      -m p.aceredag@gmail.com \
+      --staging \
+  when: (not certbot_certs.stat.exists) and (internet_protocol == 'https')
+
+- name: Create path for DH Param certificate
+  file:
+    path: /etc/ssl/nginx
+    state: directory
+  when: internet_protocol == 'https'
+
+- name: Check if previous DH Param certificate exist
+  stat:
+    path: /etc/ssl/nginx/revproxy-dhparam.pem
+  register: dhparam_cert
+  when: internet_protocol == 'https'
+
+- name: Generate DH Param certificate
+  openssl_dhparam:
+    path: /etc/ssl/nginx/revproxy-dhparam.pem
+  when: (not dhparam_cert.stat.exists) and (internet_protocol == 'https')
+
+- name: Copy Nginx configuration file
   copy:
-    src: "{{ item.file }}"
-    dest: "{{ item.dest }}"
+    src: "{{ playbook_dir }}/nginx/sources/nginx.conf"
+    dest: "/etc/docker/nginx/conf"
+
+# Could use /role/vars/main.yml
+- name: Delete HTTPS configuration files if HTTP
+  file:
+    path: "{{ item }}"
+    state: absent
   loop:
-    - {
-      file: "{{ playbook_dir }}/nginx/sources/nginx.conf",
-      dest: "/etc/docker/nginx/conf"
-    }
-    - {
-      file: "{{ playbook_dir }}/nginx/sources/grafana.conf",
-      dest: "/etc/docker/nginx/conf/conf.d"
-    }
-    - {
-      file: "{{ playbook_dir }}/nginx/sources/prometheus.conf",
-      dest: "/etc/docker/nginx/conf/conf.d"
-    }
+    - "/etc/docker/nginx/conf/conf.d/ssl.conf"
+    - "/etc/docker/nginx/conf/conf.d/grafana-https.conf"
+    - "/etc/docker/nginx/conf/conf.d/prometheus-https.conf"
+  when: internet_protocol == "http"
+
+- name: Delete HTTP configuration files if HTTPS
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/etc/docker/nginx/conf/conf.d/grafana.conf"
+    - "/etc/docker/nginx/conf/conf.d/prometheus.conf"
+  when: internet_protocol == "https"
+
+- name: Copy Nginx HTTPS configuration files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/docker/nginx/conf/conf.d"
+  loop:
+    - "{{ playbook_dir }}/nginx/sources/ssl.conf"
+    - "{{ playbook_dir }}/nginx/sources/grafana-https.conf"
+    - "{{ playbook_dir }}/nginx/sources/prometheus-https.conf"
+  when: internet_protocol == 'https'
+
+- name: Copy nginx HTTP configuration files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/docker/nginx/conf/conf.d"
+  loop:
+    - "{{ playbook_dir }}/nginx/sources/grafana.conf"
+    - "{{ playbook_dir }}/nginx/sources/prometheus.conf"
+  when: internet_protocol == "http"
+
 
 - name: Tear down existing Nginx container
   docker_compose:
@@ -41,11 +120,12 @@
       - nginx-docker-compose.yml
     state: absent
 
-- name: Build Nginx-Certbot image
+- name: Build Nginx custom image
   docker_image:
-    name: sagitarius/nginx-certbot
+    name: sagitarius/nginx:latest
     build:
       path: /etc/docker/nginx
+    force_tag: yes
     source: build
 
 - name: Run Nginx container
@@ -53,17 +133,5 @@
     project_src: /etc/docker/nginx
     files:
       - nginx-docker-compose.yml
-
-- name: Create certificates for Nginx
-  command: >-
-    docker exec nginx-rev-proxy \
-      certbot \
-        --non-interactive \
-        --nginx \
-        -m p.aceredag@gmail.com \
-        --agree-tos \
-        --staging \
-        -d localhost \
-        #-d prometheus
 
  # TODO: Include wait for and container state must be running

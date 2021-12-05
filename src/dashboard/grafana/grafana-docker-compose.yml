@@ -6,8 +6,6 @@ services:
     image: grafana/grafana:latest
     networks:
       - dashboard
-    ports:
-      - 3000:3000
     restart: unless-stopped
     volumes:
       - ./conf/grafana.ini:/etc/docker/grafana/grafana.ini
