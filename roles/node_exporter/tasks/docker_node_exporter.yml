@@ -4,17 +4,10 @@
     src: node-exporter-docker-compose.yml
     dest: /etc/docker/prom/node_exporter
 
-- name: Tear down existing Node Exporter container
-  docker_compose:
-    project_src: /etc/docker/prom/node_exporter
-    files:
-      - node-exporter-docker-compose.yml
-    state: absent
-
 - name: Run Node Exporter container
   docker_compose:
     project_src: /etc/docker/prom/node_exporter
     files:
       - node-exporter-docker-compose.yml
-
-# TODO: Include wait_for and container state must be running
+    build: yes
+    state: present

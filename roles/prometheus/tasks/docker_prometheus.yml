@@ -4,17 +4,10 @@
     src: prometheus-docker-compose.yml
     dest: /etc/docker/prom/prometheus
 
-- name: Tear down existing Prometheus container
-  docker_compose:
-    project_src: /etc/docker/prom/prometheus
-    files:
-      - prometheus-docker-compose.yml
-    state: absent
-
 - name: Run Prometheus container
   docker_compose:
     project_src: /etc/docker/prom/prometheus
     files:
       - prometheus-docker-compose.yml
-
- # TODO: Include wait for and container state must be running
+    build: yes
+    state: present

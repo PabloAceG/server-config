@@ -15,20 +15,13 @@
     build:
       path: /etc/docker/nginx
     force_tag: yes
+    state: present
     source: build
-
-
-- name: Tear down existing Nginx container
-  docker_compose:
-    project_src: /etc/docker/nginx
-    files:
-      - nginx-docker-compose.yml
-    state: absent
 
 - name: Run Nginx container
   docker_compose:
     project_src: /etc/docker/nginx
     files:
       - nginx-docker-compose.yml
-
- # TODO: Include wait for and container state must be running
+    build: yes
+    state: present

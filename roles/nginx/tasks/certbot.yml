@@ -21,6 +21,5 @@
       --agree-tos \
       -d "{{ domain }}" \
       --cert-name rev.proxy \
-      -m "{{ email }}" \
-      --staging \
+      -m "{{ email }}"
   when: not certbot_certs.stat.exists
