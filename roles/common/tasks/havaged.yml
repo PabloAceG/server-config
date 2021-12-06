@@ -1,0 +1,11 @@
+---
+- name: Install haveged, random number generator
+  apt:
+    name: haveged
+    state: present
+
+- name: Enable haveged service
+  systemd:
+    name: haveged
+    state: started
+    enabled: yes
