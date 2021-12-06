@@ -6,7 +6,5 @@
   docker_network:
     name: dashboard
 
-- name: Install haveged for entropy generation (generate DH Param certs faster)
-  apt:
-    name: haveged
-    state: present
+- name: Install havaged to generate entropy for DH Param certificates
+  include_tasks: havaged.yml

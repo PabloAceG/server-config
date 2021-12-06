@@ -23,3 +23,17 @@
       --cert-name rev.proxy \
       -m "{{ email }}"
   when: not certbot_certs.stat.exists
+
+- name: Copy renewal timer files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/
+  loop:
+    - certbot-renewal.service
+    - certbot-renewal.timer
+
+- name: Enable renewal timer
+  systemd:
+    name: certbot-renewal.timer
+    state: started
+    enabled: yes
