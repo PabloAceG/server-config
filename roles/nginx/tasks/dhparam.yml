@@ -1,0 +1,20 @@
+---
+- name: Install haveged for entropy generation (generate DH Param certs faster)
+  apt:
+    name: haveged
+    state: present
+
+- name: Create path for DH Param certificate
+  file:
+    path: /etc/ssl/nginx
+    state: directory
+
+- name: Check if previous DH Param certificate exist
+  stat:
+    path: /etc/ssl/nginx/revproxy-dhparam.pem
+  register: dhparam_cert
+
+- name: Generate DH Param certificate
+  openssl_dhparam:
+    path: /etc/ssl/nginx/revproxy-dhparam.pem
+  when: not dhparam_cert.stat.exists

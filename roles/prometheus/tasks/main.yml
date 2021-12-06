@@ -1,0 +1,11 @@
+---
+- name: Create Prometheus folder
+  file:
+    path: /etc/docker/prom/prometheus/conf
+    state: directory
+
+- name: Configure Prometheus
+  include_tasks: conf.yml
+
+- name: Deploy Prometheus container
+  include_tasks: docker_prometheus.yml

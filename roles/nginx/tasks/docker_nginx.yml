@@ -1,0 +1,34 @@
+---
+- name: Copy Nginx Docker custom image
+  copy:
+    src: Dockerfile
+    dest: /etc/docker/nginx
+
+- name: Copy Nginx Docker Compose
+  copy:
+    src: nginx-docker-compose.yml
+    dest: /etc/docker/nginx
+
+- name: Build Nginx custom image
+  docker_image:
+    name: sagitarius/nginx:latest
+    build:
+      path: /etc/docker/nginx
+    force_tag: yes
+    source: build
+
+
+- name: Tear down existing Nginx container
+  docker_compose:
+    project_src: /etc/docker/nginx
+    files:
+      - nginx-docker-compose.yml
+    state: absent
+
+- name: Run Nginx container
+  docker_compose:
+    project_src: /etc/docker/nginx
+    files:
+      - nginx-docker-compose.yml
+
+ # TODO: Include wait for and container state must be running

@@ -1,0 +1,12 @@
+---
+- name: Install Docker
+  include_tasks: docker.yml
+
+- name: Generate Docker common network for dashboard
+  docker_network:
+    name: dashboard
+
+- name: Install haveged for entropy generation (generate DH Param certs faster)
+  apt:
+    name: haveged
+    state: present

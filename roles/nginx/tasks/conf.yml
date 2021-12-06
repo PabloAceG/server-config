@@ -1,0 +1,13 @@
+---
+- name: Copy Nginx default configuration file
+  copy:
+    src: nginx.conf
+    dest: /etc/docker/nginx/conf
+
+- name: Configure proxy to use HTTPS
+  include_tasks: https.yml
+  when: internet_protocol == 'https'
+
+- name: Configure proxy to use HTTP
+  include_tasks: http.yml
+  when: internet_protocol == 'http'

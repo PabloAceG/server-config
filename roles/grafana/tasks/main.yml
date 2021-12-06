@@ -1,0 +1,11 @@
+---
+- name: Create Grafana folder
+  file:
+    path: /etc/docker/grafana/conf
+    state: directory
+
+- name: Configure Grafana
+  include_tasks: config.yml
+
+- name: Deploy Grafana container
+  include_tasks: docker_grafana.yml

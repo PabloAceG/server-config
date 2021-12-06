@@ -1,0 +1,16 @@
+---
+- hosts: pve
+
+  pre_tasks:
+    - include_role:
+        name: common
+
+  roles:
+    - role: prometheus
+      tags: prometheus
+
+    - role: grafana
+      tags: grafana
+
+    - role: nginx
+      tags: nginx

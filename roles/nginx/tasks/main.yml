@@ -1,0 +1,17 @@
+---
+- fail:
+    msg:
+      - "Invalid internet_protocol {{ internet_protocol }}"
+      - "Try: {{ valid_internet_protocol }}"
+  when: internet_protocol not in valid_internet_protocol
+
+- name: Create Nginx folder
+  file:
+    path: /etc/docker/nginx/conf/conf.d
+    state: directory
+
+- name: Configure Nginx as Reverse Proxy
+  include_tasks: conf.yml
+
+- name: Deploy Nginx container
+  include_tasks: docker_nginx.yml

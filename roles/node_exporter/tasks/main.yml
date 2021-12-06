@@ -1,0 +1,8 @@
+---
+- name: Create Node Exporter folder
+  file:
+    path: /etc/docker/prom/node_exporter
+    state: directory
+
+- name: Deploy Node Exporter container
+  include_tasks: docker_node_exporter.yml

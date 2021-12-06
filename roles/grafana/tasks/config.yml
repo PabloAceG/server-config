@@ -1,0 +1,23 @@
+---
+- name: Create Grafana provisioning folder
+  file:
+    path: "/etc/docker/grafana/provisioning/{{ item }}"
+    state: directory
+  loop:
+    - datasources
+    - dashboards
+
+- name: Place Grafana configuration file
+  copy:
+    src: grafana.ini
+    dest: /etc/docker/grafana/conf
+
+- name: Place Grafana datasource files
+  copy:
+    src: "{{ item.file }}"
+    dest: "/etc/docker/grafana/provisioning/{{ item.fdest }}"
+  loop:
+    - {
+      file: datasource.yml,
+      fdest: "datasources"
+    }

@@ -1,0 +1,26 @@
+---
+- name: Install Python, dependency for Certbot
+  apt:
+    name: python3-pip
+
+- name: Install Certbot
+  pip:
+    name: certbot
+
+# TODO: check every certificate
+- name: Check if previous Certbot certificates exist
+  stat:
+    path: /etc/letsencrypt/live/rev.proxy
+  register: certbot_certs
+
+- name: Generate SSL certificates
+  command: >-
+    certbot certonly \
+      --non-interactive \
+      --standalone
+      --agree-tos \
+      -d "{{ domain }}" \
+      --cert-name rev.proxy \
+      -m "{{ email }}" \
+      --staging \
+  when: not certbot_certs.stat.exists

@@ -1,0 +1,18 @@
+---
+- include_tasks: certbot.yml
+
+- include_tasks: dhparam.yml
+
+- name: Delete HTTP configuration files if HTTPS
+  file:
+    path: "/etc/docker/nginx/conf/conf.d/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ http_conf }}"
+
+- name: Copy Nginx HTTPS configuration files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/docker/nginx/conf/conf.d
+  with_items:
+    - "{{ https_conf }}"
