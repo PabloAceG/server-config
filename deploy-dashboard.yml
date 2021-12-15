@@ -14,3 +14,6 @@
 
     - role: nginx
       tags: nginx
+
+    - role: notifications
+      tags: notifications
