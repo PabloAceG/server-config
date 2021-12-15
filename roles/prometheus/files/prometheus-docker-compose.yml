@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    networks:
+      - dashboard
+    restart: unless-stopped
+    volumes:
+      - ./conf:/etc/prometheus
+      - data:/prometheus
+    command: '--web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml'
+
+volumes:
+  data:
+
+networks:
+  dashboard:
+    external: true

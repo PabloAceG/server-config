@@ -1,0 +1,13 @@
+---
+- name: Copy Node Exporter Docker compose folder
+  copy:
+    src: node-exporter-docker-compose.yml
+    dest: /etc/docker/prom/node_exporter
+
+- name: Run Node Exporter container
+  docker_compose:
+    project_src: /etc/docker/prom/node_exporter
+    files:
+      - node-exporter-docker-compose.yml
+    build: yes
+    state: present

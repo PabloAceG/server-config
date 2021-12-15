@@ -1,0 +1,39 @@
+---
+- name: Install Python, dependency for Certbot
+  apt:
+    name: python3-pip
+
+- name: Install Certbot
+  pip:
+    name: certbot
+
+# TODO: check every certificate
+- name: Check if previous Certbot certificates exist
+  stat:
+    path: /etc/letsencrypt/live/rev.proxy
+  register: certbot_certs
+
+- name: Generate SSL certificates
+  command: >-
+    certbot certonly \
+      --non-interactive \
+      --standalone
+      --agree-tos \
+      -d "{{ domain }}" \
+      --cert-name rev.proxy \
+      -m "{{ email }}"
+  when: not certbot_certs.stat.exists
+
+- name: Copy renewal timer files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/
+  loop:
+    - certbot-renewal.service
+    - certbot-renewal.timer
+
+- name: Enable renewal timer
+  systemd:
+    name: certbot-renewal.timer
+    state: started
+    enabled: yes

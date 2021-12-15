@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  nginx-rev-proxy:
+    container_name: nginx-rev-proxy
+    image: sagitarius/nginx:latest
+    networks:
+      - dashboard
+    ports:
+      - 443:443
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+        - /etc/letsencrypt/live/rev.proxy:/etc/letsencrypt/live/rev.proxy:ro
+        - /etc/letsencrypt/archive/rev.proxy:/etc/letsencrypt/archive/rev.proxy:ro
+        - /etc/ssl/nginx:/etc/ssl/nginx:ro
+        - ./conf:/etc/nginx/
+
+networks:
+  dashboard:
+    external: true

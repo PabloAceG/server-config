@@ -1,0 +1,5 @@
+[Unit]
+Description=Certbot Renewal
+
+[Service]
+ExecStart=certbot renew --post-hook "docker container restart nginx-rev-proxy"

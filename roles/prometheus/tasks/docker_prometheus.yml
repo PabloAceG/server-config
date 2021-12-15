@@ -1,0 +1,13 @@
+---
+- name: Copy Prometheus Docker Compose
+  copy:
+    src: prometheus-docker-compose.yml
+    dest: /etc/docker/prom/prometheus
+
+- name: Run Prometheus container
+  docker_compose:
+    project_src: /etc/docker/prom/prometheus
+    files:
+      - prometheus-docker-compose.yml
+    build: yes
+    state: present

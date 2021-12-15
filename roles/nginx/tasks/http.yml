@@ -1,0 +1,15 @@
+---
+# Could use /role/vars/main.yml
+- name: Delete HTTPS configuration files if HTTP
+  file:
+    path: "/etc/docker/nginx/conf/conf.d/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ https_conf }}"
+
+- name: Copy nginx HTTP configuration files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/docker/nginx/conf/conf.d
+  with_items:
+    - "{{ http_conf }}"

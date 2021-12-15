@@ -1,0 +1,10 @@
+---
+- name: Install Docker
+  include_tasks: docker.yml
+
+- name: Generate Docker common network for dashboard
+  docker_network:
+    name: dashboard
+
+- name: Install havaged to generate entropy for DH Param certificates
+  include_tasks: havaged.yml

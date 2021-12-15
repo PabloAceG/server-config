@@ -1,0 +1,7 @@
+---
+- name: Move configuration files
+  copy:
+    src: "{{ item }}"
+    dest: /etc/docker/prom/prometheus/conf
+  loop:
+    - prometheus.yml

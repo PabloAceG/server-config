@@ -1,0 +1,20 @@
+---
+internet_protocol: 'https'
+domain: 'example.com'
+email: 'example@example.com'
+
+https_conf: [
+  ssl.conf,
+  grafana-https.conf,
+  prometheus-https.conf ]
+
+http_conf: [
+  grafana.conf,
+  prometheus.conf ]
+
+
+# Be advised:
+# The variables under this comment are use as "constants", their consequent
+# alteration or modification might result in unexpected behaviors as well as
+# an unworkable playbook. Think twice before modifying any of their values.
+valid_internet_protocol: [ 'https', 'http' ]

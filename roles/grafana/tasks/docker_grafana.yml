@@ -1,0 +1,13 @@
+---
+- name: Copy Grafana Docker Compose
+  copy:
+    src: grafana-docker-compose.yml
+    dest: /etc/docker/grafana
+
+- name: Run Grafana container
+  docker_compose:
+    project_src: /etc/docker/grafana
+    files:
+      - grafana-docker-compose.yml
+    build: yes
+    state: present
