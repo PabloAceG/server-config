@@ -1,15 +1,13 @@
 ---
-- name: Copy notification script
-  copy:
-    src: notification-startup.sh
-    dest: /usr/local/bin
+- fail:
+    msg: "telegram.chatid and telegram.token variables must be defined in order to use notification-startup.sh.j2 template!!"
+  when: not telegram or not telegram.chatid or not telegram.token
 
-- name: Provide execution permissions to scripts
-  file:
-    dest: "{{ item }}"
+- name: Copy notification script
+  template:
+    src: notification-startup.sh.j2
+    dest: /usr/local/bin/notification-startup.sh
     mode: a+x
-  loop:
-    - /usr/local/bin/notification-startup.sh
 
 - name: Copy notification timer files
   copy:
