@@ -2,4 +2,4 @@
 Description=Notify Telegram channel, server has started running
 
 [Service]
-ExecStart=/usr/local/bin/startup-notification.sh
+ExecStart=/usr/local/bin/notification-startup.sh

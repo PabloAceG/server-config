@@ -2,7 +2,7 @@
 Description=Run start-up notification service on server boot
 
 [Timer]
-Unit=startup-notification.service
+Unit=notification-startup.service
 OnCalendar=*-*-* 8:00:00
 Persistent=true
 

@@ -49,4 +49,3 @@
     mode: "u=rw,g=r,o=r"
   loop:
     - /etc/drone
-    - /etc/certs/drone

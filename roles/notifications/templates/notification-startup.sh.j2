@@ -1,3 +1,4 @@
+{% raw -%}
 #!/bin/bash
 
 # Message
@@ -17,6 +18,7 @@ DISKUSG=$(df -h -x squashfs -x tmpfs -x devtmpfs --output=source,size,pcent,avai
 DISKUSGMSG="\n<b><i>Disk Statistics</i></b>\n<pre>${DISKUSG}</pre>\n"
 
 MESSAGE="${NODENAMEMSG} ${IPADDRESSMSG} ${DOCKERMSG} ${VMLISTMSG} ${DISKUSGMSG}"
+{% endraw %}
 
 curl -s -X POST "https://api.telegram.org/bot{{ telegram.token }}/sendMessage" \
     -d chat_id="{{ telegram.chatid }}" \

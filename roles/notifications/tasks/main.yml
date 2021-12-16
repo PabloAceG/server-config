@@ -1,6 +1,10 @@
 ---
 - fail:
     msg: "telegram.chatid and telegram.token variables must be defined in order to use notification-startup.sh.j2 template!!"
+  when: telegram is not defined or telegram.chatid is not defined or telegram.token is not defined
+
+- fail:
+    msg: "telegram.chatid and telegram.token variables must not be empty in order to use notification-startup.sh.j2 template!!"
   when: not telegram or not telegram.chatid or not telegram.token
 
 - name: Copy notification script
@@ -27,6 +31,4 @@
     state: started
     enabled: yes
   loop:
-    - startup-notification.timer
-
-# TODO: delete unnecessary files call startup-notification.{sh,service,timer}
+    - notification-startup.timer
