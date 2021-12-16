@@ -3,8 +3,8 @@ Description=Run start-up notification service on server boot
 
 [Timer]
 Unit=notification-startup.service
+OnBootSec=1min
 OnCalendar=*-*-* 8:00:00
-Persistent=true
 
 [Install]
 WantedBy=timers.target
