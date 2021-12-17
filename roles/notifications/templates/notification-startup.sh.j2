@@ -1,0 +1,30 @@
+{% raw -%}
+#!/bin/bash
+
+# Message
+NODENAME=$(cat /etc/hostname)
+NODENAMEMSG="<b><u>Node Name</u></b>\n<pre>${NODENAME}</pre>\n"
+
+IPADDRESS=$(curl ifconfig.me)
+IPADDRESSMSG="\n<b><i>Current IP Address</i></b>\n${IPADDRESS}\n"
+
+DOCKERPS=$(docker ps --all --format "table {{.Names}}\t{{.State}}")
+DOCKERMSG="\n<b><i>Docker Containers Status</i></b>\n<pre>${DOCKERPS}</pre>\n"
+
+VMLIST=$(qm list | awk '{ $4=$5=$6=""; print $0 }' | column -t)
+VMLISTMSG="\n<b><i>VMs Status</i></b>\n<pre>${VMLIST}</pre>\n"
+
+DISKUSG=$(pvesm status |
+          awk '{ $2=$3="" ; print }' |
+          awk '{ for(i=2;i<NF;i++) if(NR>1) $i=$i "K" ; print}' |
+          numfmt --header --field 2-4 --from iec --to iec |
+          column -t)
+DISKUSGMSG="\n<b><i>Disk Statistics</i></b>\n<pre>${DISKUSG}</pre>\n"
+
+MESSAGE="${NODENAMEMSG} ${IPADDRESSMSG} ${DOCKERMSG} ${VMLISTMSG} ${DISKUSGMSG}"
+{% endraw %}
+
+curl -s -X POST "https://api.telegram.org/bot{{ telegram.token }}/sendMessage" \
+    -d chat_id="{{ telegram.chatid }}" \
+    -d text="$(echo -e "$MESSAGE")" \
+    -d parse_mode=html
