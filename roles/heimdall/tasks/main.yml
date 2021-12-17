@@ -1,0 +1,8 @@
+---
+- name: Create Heimdall folder
+  file:
+    path: /etc/docker/heimdall/conf
+    state: directory
+
+- name: Deploy Heimdall container
+  include_tasks: docker_heimdall.yml

@@ -1,0 +1,13 @@
+---
+- name: Copy Heimdall Docker Compose
+  copy:
+    src: heimdall-docker-compose.yml
+    dest: /etc/docker/heimdall
+
+- name: Run Heimdall container
+  docker_compose:
+    project_src: /etc/docker/heimdall
+    files:
+      - heimdall-docker-compose.yml
+    build: yes
+    state: present
