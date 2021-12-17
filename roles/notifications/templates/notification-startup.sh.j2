@@ -14,7 +14,11 @@ DOCKERMSG="\n<b><i>Docker Containers Status</i></b>\n<pre>${DOCKERPS}</pre>\n"
 VMLIST=$(qm list | awk '{ $4=$5=$6=""; print $0 }' | column -t)
 VMLISTMSG="\n<b><i>VMs Status</i></b>\n<pre>${VMLIST}</pre>\n"
 
-DISKUSG=$(df -h -x squashfs -x tmpfs -x devtmpfs --output=source,size,pcent,avail)
+DISKUSG=$(pvesm status |
+          awk '{ $2=$3="" ; print }' |
+          awk '{ for(i=2;i<NF;i++) if(NR>1) $i=$i "K" ; print}' |
+          numfmt --header --field 2-4 --from iec --to iec |
+          column -t)
 DISKUSGMSG="\n<b><i>Disk Statistics</i></b>\n<pre>${DISKUSG}</pre>\n"
 
 MESSAGE="${NODENAMEMSG} ${IPADDRESSMSG} ${DOCKERMSG} ${VMLISTMSG} ${DISKUSGMSG}"
