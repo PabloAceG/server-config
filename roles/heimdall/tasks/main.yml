@@ -6,3 +6,10 @@
 
 - name: Deploy Heimdall container
   include_tasks: docker_heimdall.yml
+
+- name: Add Heimdall password protection
+  command: >-
+    docker exec -i heimdall htpasswd -i -c /config/nginx/.htpasswd {{ htusr|quote }}
+  args:
+    stdin: "{{ htpasswd }}"
+  when: htusr and htpasswd
